@@ -8,9 +8,15 @@
   color: var(--paper);
 }
 
+.top-section {
+  display: flex;
+  flex-direction: row;
+}
+
 #site-header {
   font-size: var(--page-header);
   margin-bottom: 0px;
+  margin-top:30px;
 }
 
 #site-subheader {
@@ -20,4 +26,37 @@
   margin-left: 20px;
   color: var(--paper-muted);
   font-weight: normal;
+}
+
+#search-section {
+  margin-left: auto;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.icon-button {
+  background-color: var(--bg-contrast); 
+  border-radius: 4px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  width: 30px;
+  height: 30px;
+  margin-top: 4px;
+  font-size: 0;        /* hides the "search" text */
+  color: transparent;      /* hides the "search" text */
+}
+
+#search-button {
+  background-image: url("../assets/search-icon.png"); 
+}
+
+#stp-button {
+  background-image: url("../assets/sticky-toffee-pudding-icon-2.png");
+}
+
+#back-button {
+  background-image: url("../assets/back-button-icon.jpg");
 }

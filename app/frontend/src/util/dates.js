@@ -18,3 +18,7 @@ export const get_week = () => {
 export const short_isoformat = (date) => {
   return date.toISOString().split('T')[0]
 }
+
+export const short_date_string = (date) => {
+  return date.toDateString().split(' ').slice(1,3).join(' ')
+}

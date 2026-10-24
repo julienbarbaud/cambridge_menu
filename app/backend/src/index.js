@@ -13,7 +13,7 @@ app.get("/api", (request, response) => {
 })
 
 app.get("/api/dish", (request, response) => {
-    const {date: isodate, meal_type} = request.query
+    const {date: isodate, meal_type, query} = request.query
     console.log(isodate)
     const filter = {}
     if (isodate) {
@@ -40,11 +40,16 @@ app.get("/api/dish", (request, response) => {
         }
         filter.meal_type = query
     }
+    if (query) {
+        filter.name = new RegExp(query, 'i')
+    }
     console.log(filter)
     Dish.find(filter).then((data) =>{
         return response.json(data)
     })
 })
+
+app.get
 
 app.get("/api/menus/:isodate", (request, response) => {
     const query_date = new Date(request.params.isodate)

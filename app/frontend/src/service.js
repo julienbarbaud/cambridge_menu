@@ -17,3 +17,7 @@ export const get_menus = (date, meal) => {
     return resp.data
   })
 }
+
+export const get_search_matches = (search) => {
+  return axios.get(`${API_BASE_URL}/dish?query=${search}`).then((resp) => resp.data)
+}

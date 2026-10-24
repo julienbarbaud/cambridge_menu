@@ -1,30 +1,41 @@
 import './App.css'
-import { DateList, MealList } from './Components/Selectors'
-import { useSearchParams } from 'react-router-dom'
-import { MenuList  } from './Components/Menu'
+import { Link, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { MenuPage } from './Components/MenuPage'
+import { SearchPage } from './Components/SearchPage'
 
 
 
 const App = () => {
-  // choosing to rely on search params rather than state so the query state can be saved in histroy, shared, etc...
-  const [search_params, set_search_params] = useSearchParams('?meal_type=lunch&date=2026-10-22')
-  const create_setter = (field_name) => (val) => {
-    const new_params = new URLSearchParams(search_params)
-    new_params.set(field_name, val)
-    set_search_params(new_params)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const on_search_page = location.pathname === '/search'
+  const handle_back_button_click = () => {
+    if (location.key !== 'default') navigate(-1)
+    navigate('/')
   }
-  const chosen_date = search_params.get('date')
-  const set_chosen_date = create_setter('date')
-  const chosen_meal = search_params.get('meal_type')
-  const set_chosen_meal = create_setter('meal_type')
 
   return(
     <div className="page">
-      <h1 id='site-header'>Cambr'eats</h1>
-      <h4 id='site-subheader'>All the colleges' menus, in one place</h4>
-      <DateList chosen_date={chosen_date} set_date={set_chosen_date}/>
-      <MealList chosen_meal={chosen_meal} set_chosen_meal={set_chosen_meal}/>
-      <MenuList date={chosen_date} meal={chosen_meal}/>
+      <div className='top-section'>
+        <div className='header-block'>
+          <h1 id='site-header'>Cambr'eats</h1>
+          <h4 id='site-subheader'>All the colleges' menus, in one place</h4>
+        </div>
+        <div id="search-section">
+          {
+            on_search_page
+              ? <button id='back-button' className='icon-button' onClick={handle_back_button_click}>back</button>
+              : <Link id='search-button' className='icon-button' to="/search">search</Link>
+          }
+          <Link id="stp-button" className='icon-button' to="/search?query=sticky+toffee">da S.T.P.</Link>
+        </div>
+      </div>
+      <Routes>
+        <Route path='/' Component={MenuPage}/>
+        <Route path='/search' Component={SearchPage}/>
+      </Routes>
+
     </div>
   )
 }

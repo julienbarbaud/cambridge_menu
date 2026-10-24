@@ -43,10 +43,11 @@ export const MealList = ({ chosen_meal, set_chosen_meal }) => {
   )
 }
 
-const MealSelector = ({ meal_name, set_meal }) => {
+const MealSelector = ({ meal_name, chosen_meal, set_meal }) => {
   const handle_click = () => set_meal(meal_name.toLowerCase())
+  const class_name = `meal-selector ${chosen_meal === meal_name.toLowerCase() ? 'selected' : ''}`
   return(
-    <button className='meal-selector' onClick={handle_click}>
+    <button className={class_name} onClick={handle_click}>
       {meal_name}
     </button>
   )
