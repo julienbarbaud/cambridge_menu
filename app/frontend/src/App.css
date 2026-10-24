@@ -1,0 +1,23 @@
+.page{
+  box-sizing: border-box;
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  color: var(--paper);
+}
+
+#site-header {
+  font-size: var(--page-header);
+  margin-bottom: 0px;
+}
+
+#site-subheader {
+  font-size: var(--page-subheader);
+  font-style: italic;
+  margin-top: 0px;
+  margin-left: 20px;
+  color: var(--paper-muted);
+  font-weight: normal;
+}

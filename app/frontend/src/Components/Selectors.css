@@ -1,0 +1,67 @@
+.selector-list {   
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button {
+    background: none;
+    border: none;
+    color: var(--bg-contrast);
+    font-family: "Source Serif 4", "Source Serif 4 Fallback", system-ui, sans-serif;
+    border-radius: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 6px;
+    padding-bottom:7px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+button.selected {
+    color: var(--paper);
+    font-weight: bold;
+    background-color: var(--bg-contrast-muted);
+    color: var(--dark-muted);
+}
+
+#date-list {
+    display: flex;
+    flex-direction: row;
+    gap: 2%;
+    padding:0px;
+    margin: 0px;
+    justify-content: center;
+    border-bottom: 1px solid var(--paper);
+    border-top: 1px solid var(--paper);
+}
+
+.day-label {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-weight: bold;
+    font-size: var(--page-subheader);
+}
+
+.date-label {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: var(--hint);
+}
+
+#meal-list {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-items: left;
+    margin-left: 0px;
+}
+
+.meal-selector {
+    font-size: var(--meal-type-selector);
+    font-family: var(--posh-font);
+    margin-left: 5px;
+    margin-right: 5px;
+}

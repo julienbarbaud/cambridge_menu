@@ -1,0 +1,45 @@
+#menu-list {
+    margin-top: 10px;
+}
+
+.college-menu-card {
+    background: #faf3f8;
+    background-image: radial-gradient(ellipse at center,#0000, #7a2a1a11 100%);
+    margin:5px;
+    margin-bottom: 20px;
+    font-family: var(--posh-font);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    padding:8px;
+    padding-bottom:35px;
+}
+
+h2 {
+    align-self: center;
+    margin-bottom: 8px;
+}
+
+h3 {
+    font-family: var(--normal-font);
+    color: var(--ink-muted);
+    font-size: var(--hint);
+    margin-top: 30px;
+}
+
+.college-separator {
+    width: 60%;
+    border-bottom: 1px solid var(--ink);
+}
+
+.course-list {
+    margin-left: 0px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--normal);
+}
+
+.course-item {
+    text-indent: 12px;
+}
