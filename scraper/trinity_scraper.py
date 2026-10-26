@@ -1,20 +1,29 @@
 import io
+import bs4
 import itertools
 import re
 import sys
 from datetime import date, timedelta
 import pdfplumber
 from dateutil import parser
+import logging
 
 from model import Dish
-from util import fetch_html, normalize_string_data, WEEKDAYS, MEAL_MARKERS
+from util import fetch_html, normalize_string_data, MEAL_MARKERS
 
 #TODO: scrape pdf menu url from trinity website
+WEBSITE_URL= "https://www.trin.cam.ac.uk/download/hall-menu-this-week/"
+LOGGER = logging.getLogger(__name__)
 
-
-COLLEGE_NAME = "Trinity"
-MENU_PDF_URL = "https://www.trin.cam.ac.uk/download/hall-menu-this-week/?wpdmdl=30107&refresh=6ad4d6a38f3e71792333475"
-
+def get_menu_pdf_url():
+    html = fetch_html(WEBSITE_URL)
+    link = bs4.BeautifulSoup(html, "html.parser").find("a", class_="inddl")
+    if link is None:
+        raise RuntimeError("No links found on the Trinity website for their menu")
+    pdf_url = link.get("href")
+    if pdf_url is None:
+        raise RuntimeError("can't find Trinity menu url in the link")
+    return str(pdf_url)
 
 # "Mains", "Mains:", "Dessert: Banoffee Pie Sundae", "Daily Special: (vegan)"
 # The name must be followed by a colon or the end of the text, so a dish that merely
@@ -26,14 +35,15 @@ COURSE_RE = re.compile(
 TAGS_ONLY_RE = re.compile(r"^(\s*\((?:v|vegan|wf/df|gf|wf|df)\)\s*)+$", re.IGNORECASE)
 
 
-def scrape_trinity(url: str = MENU_PDF_URL) -> list[Dish]:
+def scrape_trinity(college_name: str) -> list[Dish]:
+    url = get_menu_pdf_url()
     if not url:
         raise ValueError("MENU_PDF_URL is not set")
     pdf_bytes = fetch_html(url)  # returns raw bytes, fine for a PDF too
-    return parse_pdf(pdf_bytes)
+    return parse_pdf(pdf_bytes, college_name)
 
 
-def parse_pdf(source: bytes | str) -> list[Dish]:
+def parse_pdf(source: bytes | str, college_name: str) -> list[Dish]:
     pdf_file = io.BytesIO(source) if isinstance(source, bytes) else source
     dishes = []
     with pdfplumber.open(pdf_file) as pdf:
@@ -46,7 +56,7 @@ def parse_pdf(source: bytes | str) -> list[Dish]:
             date = week_end - timedelta(days=6 - i)
             check_header(header, date)
             paras = merge_split_paragraphs(paragraphs(page, cell))
-            dishes.extend(parse_day(paras, date))
+            dishes.extend(parse_day(paras, date, college_name))
     if not dishes:
         raise ValueError("empty menu for Trinity")
     return dishes
@@ -105,7 +115,7 @@ def merge_split_paragraphs(paras: list[str]) -> list[str]:
     return merged
 
 
-def parse_day(paras: list[str], date: date) -> list[Dish]:
+def parse_day(paras: list[str], date: date, college_name: str) -> list[Dish]:
     dishes: list[Dish] = []
     meal: str | None = None
     course: str | None = None
@@ -116,7 +126,7 @@ def parse_day(paras: list[str], date: date) -> list[Dish]:
             name=name,
             meal_type=meal,  # type: ignore  # checked before add() is called
             date=date.isoformat(),
-            college=COLLEGE_NAME,
+            college=college_name,
         ))
 
     for text in paras:
@@ -141,14 +151,11 @@ def parse_day(paras: list[str], date: date) -> list[Dish]:
             # a note about the dish above, e.g. "(Maple Burger Roll, Gerkin Slices, ...)"
             continue
         if meal is None or course is None:
-            print(f"Trinity: dish outside a meal/course on {date:%d %b}: {text!r}")
+            logging.warning(f"Trinity: dish outside a meal/course on {date:%d %b}: {text!r}")
             continue
         add(text)
     return dishes
 
 
 if __name__ == "__main__":
-    # python trinity_scraper.py path/to/menu.pdf   (or set MENU_PDF_URL and run with no args)
-    menu = parse_pdf(sys.argv[1]) if len(sys.argv) > 1 else scrape_trinity()
-    for item in menu:
-        print(item)
+    scrape_trinity("Trinity")

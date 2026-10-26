@@ -7,6 +7,8 @@ import dotenv
 #     raise FileNotFoundError(".env file containing authentication information not found; can't connect to the database")
 dotenv.load_dotenv()
 DB_URL = os.getenv("MONGODB_URI")
+if not DB_URL:
+    raise RuntimeError("MONGODB_URI is not set (put it in .env locally, or in a GitHub secret)")
 
 WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 MEAL_MARKERS = {"lunch", "dinner", "brunch", "breakfast"}
