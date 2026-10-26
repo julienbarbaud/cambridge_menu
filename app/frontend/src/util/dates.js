@@ -1,24 +1,24 @@
-const shift_days = (date, days) => {
-  const shifted = new Date(date)
-  shifted.setDate(shifted.getDate() + days)
-  return shifted
-}
+import { addWeeks, addDays, startOfToday, startOfWeek, format, parseISO } from 'date-fns'
 
-export const get_week = () => {
-  const today = new Date()
-  const first_day = shift_days(today, -today.getDay() + 1)
+export const get_week = (week_shift=0, iso_center_day=null) => {
+  let center_day
+  if (iso_center_day !== null) center_day = parseISO(iso_center_day)
+  else center_day = startOfToday()
+
+  const shifted_center = addWeeks(center_day, week_shift)
+  const first_week_day = startOfWeek(shifted_center, { weekStartsOn: 1 })
   const week = []
   for (let i = 0; i<7; i++){
-    const day = shift_days(first_day, i)
-    week.push(day)
+    const day = addDays(first_week_day, i)
+    week.push(get_isoformat(day))
   }
   return week
 }
 
-export const short_isoformat = (date) => {
-  return date.toISOString().split('T')[0]
-}
+const get_isoformat = (date) => format(date, 'yyyy-MM-dd')
 
-export const short_date_string = (date) => {
-  return date.toDateString().split(' ').slice(1,3).join(' ')
-}
+export const get_week_day = (isodate) => format(parseISO(isodate), 'EEE')
+
+export const get_short_slash_date = (isodate) => isodate.split('-').slice(1).join('/')
+
+export const today = () => get_isoformat(startOfToday())

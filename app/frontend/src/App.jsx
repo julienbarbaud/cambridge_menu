@@ -43,6 +43,7 @@ const App = () => {
 export default App
 
 // TODO:
-// styling
-// search bar + sticky toffee pudding button
+// fix back navigation of search page
+// fetching week dishes in bulk for smoother UI updates
 // error handling (including message on empty search results)
+// styling of search page?

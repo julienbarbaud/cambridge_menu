@@ -1,13 +1,11 @@
 import axios from 'axios'
-import { short_isoformat } from './util/dates.js'
 
 const API_BASE_URL = '/api'
 
-export const get_menus = (date, meal) => {
-  if (!date || !meal) {
+export const get_menus = (isodate, meal) => {
+  if (!isodate || !meal) {
     throw 'Not allowed to query the backend without search parameters'
   }
-  const isodate = short_isoformat(new Date(date))
   meal = meal.toLowerCase()
   const meal_query_param = ['brunch', 'breakfast'].includes(meal) ?
     'meal_type=brunch&meal_type=breakfast' :

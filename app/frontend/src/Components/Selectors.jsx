@@ -1,28 +1,46 @@
-import { get_week, short_isoformat } from '../util/dates.js'
+import { useState } from 'react'
+import { get_week, get_week_day, get_short_slash_date } from '../util/dates.js'
 import './Selectors.css'
 
 export const DateList = ({ chosen_date, set_date }) => {
-  //const today = new Date()
-  const week = get_week()
-  return(
+  const [week_shift, set_week_shift] = useState(0)
+  const handle_previous_click = () => {
+    set_week_shift(week_shift-1)
+  }
+  const handle_next_click = () => {
+    set_week_shift(week_shift+1)
+  }
+
+  const chosen_week = get_week(week_shift, chosen_date)
+
+  return(<div className='date-selection-section'>
+    <button id='previous-dates-button' className='date-navigation-button' onClick={handle_previous_click}/>
     <ul className='selector-list' id='date-list'>
-      {week.map(day => <DateSelector key={day.toISOString()} chosen_date={chosen_date} date={day} set_date={set_date}/>)}
+      {chosen_week.map(day => <DateSelector
+        key={day}
+        chosen_date={chosen_date}
+        date={day}
+        set_date={set_date}
+        set_week_shift={set_week_shift}
+      />)}
     </ul>
+    <button id='next-dates-button' className='date-navigation-button' onClick={handle_next_click}/>
+  </div>
   )
 }
 
 
-export const DateSelector = ({ date, chosen_date, set_date }) => {
-  const day = date.toDateString().split(' ')[0]
-  const formatted_date = `${date.getMonth()}/${date.getDate()}`
+export const DateSelector = ({ date, chosen_date, set_date , set_week_shift }) => {
+  const week_day = get_week_day(date)
+  const formatted_date = get_short_slash_date(date)
   const handle_click = () => {
-    console.log(date.toDateString())
-    set_date(short_isoformat(date))
+    set_date(date)
+    set_week_shift(0)
   }
   return(
     <li>
-      <button className={short_isoformat(date)===chosen_date ? 'selected' : ''} onClick={handle_click}>
-        <p className='day-label'>{day}</p>
+      <button className={date===chosen_date ? 'selected' : ''} onClick={handle_click}>
+        <p className='day-label'>{week_day}</p>
         <p className='date-label'>{formatted_date}</p>
       </button>
     </li>

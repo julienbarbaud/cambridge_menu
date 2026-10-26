@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { group_dishes_by } from '../util/helper'
 import { get_search_matches } from '../service'
-import { short_date_string } from '../util/dates.js'
+import { get_short_slash_date } from '../util/dates.js'
 import { Link, useSearchParams } from 'react-router-dom'
 import './SearchPage.css'
 
@@ -60,7 +60,7 @@ const CollegeResults = ({ college, results }) => {
     <ul className='college-results-list'>
       {results.map(dish => <li key={dish._id}>
         <Link className="meal-link" to={`/?date=${dish.date}&meal_type=${dish.meal_type}`}>
-          <b>{short_date_string(new Date(dish.date))}</b> ({dish.meal_type}): {dish.name}
+          <b>{get_short_slash_date(dish.date)}</b> ({dish.meal_type}): {dish.name}
         </Link>
       </li>)}
     </ul>
