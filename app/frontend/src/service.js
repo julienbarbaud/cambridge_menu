@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { today } from './util/dates.js'
 
 const API_BASE_URL = '/api'
 
@@ -17,5 +18,5 @@ export const get_menus = (isodate, meal) => {
 }
 
 export const get_search_matches = (search) => {
-  return axios.get(`${API_BASE_URL}/dish?query=${search}`).then((resp) => resp.data)
+  return axios.get(`${API_BASE_URL}/dish?query=${search}&from_date=${today()}`).then((resp) => resp.data)
 }

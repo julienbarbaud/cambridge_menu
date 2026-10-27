@@ -9,7 +9,7 @@ const App = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const on_search_page = location.pathname === '/search'
+  const on_search_page = location.pathname.startsWith('/search')
   const handle_back_button_click = () => {
     if (location.key !== 'default') navigate(-1)
     navigate('/')
@@ -28,12 +28,13 @@ const App = () => {
               ? <button id='back-button' className='icon-button' onClick={handle_back_button_click}>back</button>
               : <Link id='search-button' className='icon-button' to="/search">search</Link>
           }
-          <Link id="stp-button" className='icon-button' to="/search?query=sticky+toffee">da S.T.P.</Link>
+          <Link id="stp-button" className='icon-button' to="/search/stp">da S.T.P.</Link>
         </div>
       </div>
       <Routes>
         <Route path='/' Component={MenuPage}/>
         <Route path='/search' Component={SearchPage}/>
+        <Route path='/search/stp' element={<SearchPage initial_search="sticky toffee"/>}/>
       </Routes>
 
     </div>

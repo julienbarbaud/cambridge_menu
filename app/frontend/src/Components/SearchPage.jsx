@@ -2,25 +2,25 @@ import { useEffect, useState } from 'react'
 import { group_dishes_by } from '../util/helper'
 import { get_search_matches } from '../service'
 import { get_short_slash_date } from '../util/dates.js'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './SearchPage.css'
 
-export const SearchPage = () => {
+export const SearchPage = ({ initial_search }) => {
   const [results, set_results] = useState([])
-  const [search_params, set_search_params] = useSearchParams('?query=')
-
-  const search = search_params.get('query')
-  const set_search = (val) => {
-    const new_params = new URLSearchParams(search_params)
-    new_params.set('query', val)
-    set_search_params(new_params)
-  }
-
+  const [search, set_search] = useState(initial_search ? initial_search : '')
 
   useEffect(() => {
-    if (search.length>1) {
-      get_search_matches(search).then(res => set_results(res))
-    }
+    if (search.length<2) return
+    // the ignore flag is here to avoid stale request results
+    let ignore = false
+    get_search_matches(search)
+      .then(res => {
+        if (!ignore) {
+          set_results(res)
+        }
+      })
+    // cleanup function: if search is updated again before the request completes, ignore it (it's outdated)
+    return () => { ignore = true }
   }, [search])
 
   const handle_search_change = (event) => {

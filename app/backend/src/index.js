@@ -13,8 +13,9 @@ app.get("/api", (request, response) => {
 })
 
 app.get("/api/dish", (request, response) => {
-    const {date: isodate, meal_type, query} = request.query
-    console.log(isodate)
+    const {date: isodate, meal_type, query, from_date} = request.query
+    if (from_date && isodate) return response.status(400).json({error: 'date and from_date research params  are incompatible and can not be both set'})
+
     const filter = {}
     if (isodate) {
         if (!validate_isodate()) {
@@ -22,6 +23,14 @@ app.get("/api/dish", (request, response) => {
         }
         filter.date = isodate
     }
+
+    if (from_date) {
+        if (!validate_isodate()) {
+            return response.status(400).json({error: `invalid isoformat date ${isodate}`})
+        }
+        filter.date = {$gte: from_date}
+    }
+
     if (meal_type) {
         let query
         if (Array.isArray(meal_type)) {

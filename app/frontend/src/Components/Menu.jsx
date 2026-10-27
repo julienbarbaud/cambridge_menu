@@ -15,7 +15,7 @@ export const MenuList = ({ date, meal }) => {
   const college_menus = group_dishes_by('college', dishes)
   return(
     <ul id='menu-list'>
-      {Object.entries(college_menus).map(
+      {Object.entries(college_menus).sort((a,b) => a[0].localeCompare(b[0])).map(
         ([college, dishes]) => {
           return(<CollegeMenu key={college} college_name={college} dishes={dishes}/>)
         }

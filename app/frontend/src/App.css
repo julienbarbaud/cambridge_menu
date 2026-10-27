@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
-  color: var(--paper);
+  color: var(--bg-contrast);
 }
 
 .top-section {
@@ -15,16 +15,17 @@
 
 #site-header {
   font-size: var(--page-header);
+  color: var(--bg-contrast-highlight);
   margin-bottom: 0px;
   margin-top:30px;
 }
 
 #site-subheader {
   font-size: var(--page-subheader);
+  color: var(--bg-contrast-muted);
   font-style: italic;
   margin-top: 0px;
   margin-left: 20px;
-  color: var(--paper-muted);
   font-weight: normal;
 }
 
@@ -37,7 +38,6 @@
 }
 
 .icon-button {
-  background-color: var(--bg-contrast); 
   border-radius: 4px;
   background-repeat: no-repeat;
   background-position: center;
@@ -58,5 +58,7 @@
 }
 
 #back-button {
-  background-image: url("../assets/back-button-icon.jpg");
+    -webkit-mask: url("../assets/back-button-icon.png") center / contain no-repeat;
+    mask: url("../assets/back-button-icon.png") center / contain no-repeat;
+    background-color: var(--bg-contrast);
 }

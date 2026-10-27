@@ -1,5 +1,9 @@
 .meal-link {
-    color: var(--paper);
+    color: var(--bg-contrast-muted);
+}
+
+.meal-link:hover {
+    color: var(--bg-contrast-highlight);
 }
 
 .college-results-list {

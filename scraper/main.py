@@ -11,12 +11,16 @@ from util import DB_URL
 from stjohn_scraper import scrape_stjohn
 from wolfson_scraper import scrape_wolfson
 from trinity_scraper import scrape_trinity
+from jesus_scraper import scrape_jesus
+from robinson_scraper import scrape_robinson
 
 
 SCRAPERS = {
     "St John": scrape_stjohn, 
     "Wolfson": scrape_wolfson, 
-    "Trinity": scrape_trinity
+    "Trinity": scrape_trinity,
+    "Jesus": scrape_jesus,
+    "Robinson": scrape_robinson
 }
 LOGGER = logging.getLogger(__name__)
 LOG_DIR = Path(__file__).parent / "logs"
@@ -31,10 +35,6 @@ logging.basicConfig(level=logging.INFO,
 def update_college_db_menu(session, collection, college: str, dates, scraped_dishes):
     session.start_transaction()
     try:
-        to_delete = collection.find({
-            "college": college,
-            "date": {"$in": dates}
-        })
         collection.delete_many({
             "college": college,
             "date": {"$in": dates}
@@ -44,7 +44,6 @@ def update_college_db_menu(session, collection, college: str, dates, scraped_dis
         session.abort_transaction()
         raise
     session.commit_transaction()
-    print(f"deleteing {[doc for doc in to_delete]}")
     
 
 def main():

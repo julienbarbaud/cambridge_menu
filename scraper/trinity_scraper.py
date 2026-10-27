@@ -11,7 +11,7 @@ import logging
 from model import Dish
 from util import fetch_html, normalize_string_data, MEAL_MARKERS
 
-#TODO: scrape pdf menu url from trinity website
+
 WEBSITE_URL= "https://www.trin.cam.ac.uk/download/hall-menu-this-week/"
 LOGGER = logging.getLogger(__name__)
 
@@ -37,8 +37,6 @@ TAGS_ONLY_RE = re.compile(r"^(\s*\((?:v|vegan|wf/df|gf|wf|df)\)\s*)+$", re.IGNOR
 
 def scrape_trinity(college_name: str) -> list[Dish]:
     url = get_menu_pdf_url()
-    if not url:
-        raise ValueError("MENU_PDF_URL is not set")
     pdf_bytes = fetch_html(url)  # returns raw bytes, fine for a PDF too
     return parse_pdf(pdf_bytes, college_name)
 
@@ -151,7 +149,7 @@ def parse_day(paras: list[str], date: date, college_name: str) -> list[Dish]:
             # a note about the dish above, e.g. "(Maple Burger Roll, Gerkin Slices, ...)"
             continue
         if meal is None or course is None:
-            logging.warning(f"Trinity: dish outside a meal/course on {date:%d %b}: {text!r}")
+            LOGGER.warning(f"Trinity: dish outside a meal/course on {date:%d %b}: {text!r}")
             continue
         add(text)
     return dishes
