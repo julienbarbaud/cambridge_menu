@@ -64,6 +64,7 @@ button:hover:not(.selected) {
     flex-direction: row;
     justify-items: left;
     margin-left: 0px;
+    margin-top: 13px;
 }
 
 .meal-selector {
@@ -80,6 +81,7 @@ button:hover:not(.selected) {
     border-top: 1px solid var(--bg-contrast-muted);
     align-items: center;
     justify-content: center;
+    margin-bottom: 0px;
 }
 
 .date-navigation-button {

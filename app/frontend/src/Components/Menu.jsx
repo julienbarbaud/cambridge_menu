@@ -30,7 +30,7 @@ const CollegeMenu = ({ college_name, dishes }) => {
     <div className='college-menu-card'>
       <h2>{college_name}</h2>
       <hr className='college-separator'/>
-      {Object.entries(courses).map(([name, courses]) => <CourseList course_name={name} courses={courses}/>)}
+      {Object.entries(courses).map(([name, courses]) => <CourseList key={name} course_name={name==='null' ? 'Miscellaneous courses' : name} courses={courses}/>)}
     </div>
   )
 }
@@ -40,7 +40,7 @@ const CourseList = ({ course_name, courses }) => {
     <div className="course-section">
       <h3>{course_name.toUpperCase()}</h3>
       <ul className='course-list'>
-        {courses.map(course => <li className='course-item'>{course.name}</li>)}
+        {courses.map(course => <li key={course._id} className='course-item'>{course.name}</li>)}
       </ul>
     </div>
   )

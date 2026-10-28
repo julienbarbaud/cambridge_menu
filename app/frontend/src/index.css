@@ -16,11 +16,12 @@
   --posh-font: "Source Serif 4", "Source Serif 4 Fallback", Georgia, serif;
   --normal-font: "Inter", "Inter Fallback", system-ui, sans-serif;
   /* font sizes */
-  --page-header: 46px;
-  --page-subheader: 14px;
-  --meal-type-selector: 28px; 
-  --hint: 10.5px;
-  --normal: 17.5px;
+  --page-header: clamp(31px, 5vw, 46px);
+  --page-subheader: clamp(11px, 2vw, 14px);
+  --meal-type-selector: clamp(20px, 3vw,28px); 
+  --hint: clamp(9px, 1vw,10.5px);
+  --secret: clamp(6px, 1vw, 10.5px);
+  --normal: clamp(14px, 2.5vw, 17.5px);
 }
 
 body {

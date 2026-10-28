@@ -42,7 +42,7 @@ def parse_meal(soup: bs4.BeautifulSoup, meal_type: str, isoday: str, college: st
     if menu is None:
         return []
     rows = menu.find_all("tr")
-    cur_course = "Unknown course"
+    cur_course = None
     dishes = []
     for row in rows:
         h4_match, fm_item_match = row.find("h4"), row.find("td", class_="fm-item-label")
@@ -50,7 +50,7 @@ def parse_meal(soup: bs4.BeautifulSoup, meal_type: str, isoday: str, college: st
             cur_course = h4_match.get_text()
         elif fm_item_match is not None:
             dishes.append(Dish(
-                course = normalize_string_data(cur_course),
+                course = normalize_string_data(cur_course) if cur_course is not None else None,
                 name=fm_item_match.get_text(),
                 meal_type=meal_type,
                 date=isoday,

@@ -34,6 +34,6 @@ def dishes_sample_printer(dishes):
             print(dishes[i])
         print("10 last:")
         for i in range(10):
-            print(dishes[-1-i])
+            print(dishes[-10+i])
     except IndexError:
         print("there is less than 10 items, probably abnormal")

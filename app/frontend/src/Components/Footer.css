@@ -1,0 +1,39 @@
+footer {
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 0px;
+    align-items: end;
+}
+
+#slave-rant {
+    display: flex;
+    flex-direction: column;
+    max-width: 60vw;
+}
+
+.footer-text {
+    color: var(--bg-constrast-muted);
+    font-style: italic;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    font-size: var(--page-subheader);
+}
+
+#hello-slave {
+    margin-bottom: 0px;
+}
+
+#slave-sos {
+    font-size: var(--secret);;
+}
+
+
+#github-footer {
+    margin-left: auto;
+}
