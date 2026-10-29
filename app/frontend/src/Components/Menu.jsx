@@ -1,15 +1,31 @@
-import { get_menus } from '../service.js'
+import { get_cached_dishes } from '../service.js'
 import { useState, useEffect } from 'react'
 import { group_dishes_by } from '../util/helper.js'
 import './Menu.css'
 
 export const MenuList = ({ date, meal }) => {
-  const [dishes, set_dishes] = useState([])
+  const [cached_dishes, set_cached_dishes] = useState([])
+  let dishes = date && cached_dishes[date]?.[meal] || []
+  // lumping brunch and breakfast together
+  if (meal === 'brunch') {
+    const breakfast = date && cached_dishes[date]?.['breakfast'] || []
+    dishes = dishes.concat(breakfast)
+  }
+  console.log(dishes)
+
   useEffect(() => {
-    if (date===null) return
-    get_menus(date, meal)
-      .then(res => set_dishes(res))
-  }, [date, meal])
+    if (!date || !meal) return
+    if (date in cached_dishes) return // if result is cached, no need to fetch
+    get_cached_dishes(date, meal)
+      .then(res => {
+        const date_groups = group_dishes_by('date', res)
+        for (const date_key of Object.keys(date_groups)){
+          date_groups[date_key] = group_dishes_by('meal_type', date_groups[date_key])
+        }
+        set_cached_dishes(date_groups)
+      })
+  }, [date, meal, cached_dishes])
+
   if (date === null) return
   console.log(`dishes: ${dishes}`)
   const college_menus = group_dishes_by('college', dishes)

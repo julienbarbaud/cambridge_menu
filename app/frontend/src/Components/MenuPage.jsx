@@ -2,7 +2,8 @@ import { DateList } from './Selectors'
 import { MealList } from './Selectors'
 import { MenuList } from './Menu'
 import { useSearchParams } from 'react-router-dom'
-import { today } from '../util/dates'
+import { today, get_date_string } from '../util/dates'
+import './MenuPage.css'
 
 export const MenuPage = () => {
   const default_date = today()
@@ -21,6 +22,7 @@ export const MenuPage = () => {
   return(
     <div>
       <DateList chosen_date={chosen_date} set_date={set_chosen_date}/>
+      <h2 id="date-marker">{get_date_string(chosen_date)}</h2>
       <MealList chosen_meal={chosen_meal} set_chosen_meal={set_chosen_meal}/>
       <MenuList date={chosen_date} meal={chosen_meal}/>
     </div>

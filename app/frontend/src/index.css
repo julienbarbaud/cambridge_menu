@@ -22,6 +22,7 @@
   --hint: clamp(9px, 1vw,10.5px);
   --secret: clamp(6px, 1vw, 10.5px);
   --normal: clamp(14px, 2.5vw, 17.5px);
+  --date: clamp(16px, 3vw, 25px)
 }
 
 body {

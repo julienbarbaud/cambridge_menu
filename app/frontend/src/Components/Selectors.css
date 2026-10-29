@@ -64,14 +64,14 @@ button:hover:not(.selected) {
     flex-direction: row;
     justify-items: left;
     margin-left: 0px;
-    margin-top: 13px;
+    margin-top: 0px;
 }
 
 .meal-selector {
     font-size: var(--meal-type-selector);
     font-family: var(--posh-font);
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
 }
 
 .date-selection-section {

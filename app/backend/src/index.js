@@ -59,7 +59,18 @@ app.get("/api/dish", (request, response) => {
     })
 })
 
-app.get
+app.get("/api/menu-range/", (request, response) => {
+    const {from_date, to_date} = request.query
+    if (!(from_date && to_date)) return response.status(400).json({error: "the /menu-range endpoint expects from_date and to_date url params"})
+    Dish.find({
+        date: {
+            $gte: from_date,
+            $lte: to_date
+        }
+    })
+    .then((data) => response.json(data))
+    .catch((error) => response.status(500).json({ error: error.message }))
+})
 
 app.get("/api/menus/:isodate", (request, response) => {
     const query_date = new Date(request.params.isodate)

@@ -21,7 +21,7 @@ const App = () => {
         <div className='top-section'>
           <div className='header-block'>
             <h1 id='site-header'>Cambr'eats</h1>
-            <h4 id='site-subheader'>All the colleges' menus, in one place</h4>
+            <h4 id='site-subheader'>All the colleges' menus, in one place (beta)</h4>
           </div>
           <div id="search-section">
             {

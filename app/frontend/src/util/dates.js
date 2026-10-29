@@ -22,3 +22,5 @@ export const get_week_day = (isodate) => format(parseISO(isodate), 'EEE')
 export const get_short_slash_date = (isodate) => isodate.split('-').slice(1).join('/')
 
 export const today = () => get_isoformat(startOfToday())
+
+export const get_date_string = (isodate) => format(parseISO(isodate), 'EEE, MMM dd')
