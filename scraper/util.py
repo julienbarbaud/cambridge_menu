@@ -2,6 +2,7 @@ import requests as req
 import os
 import dotenv
 from datetime import datetime
+from dateutil import parser
 
 dotenv.load_dotenv()
 DB_URL = os.getenv("MONGODB_URI")
@@ -25,6 +26,9 @@ def normalize_string_data(data: str):
 
 def date_isoformat(date: datetime):
     return date.isoformat().split("T")[0]
+
+def get_week_day(isodate: str):
+    return parser.parse(isodate).weekday()
 
 def dishes_sample_printer(dishes):
     print(f"found {len(dishes)} dishes")

@@ -12,8 +12,7 @@ const App = () => {
 
   const on_search_page = location.pathname.startsWith('/search')
   const handle_back_button_click = () => {
-    if (location.key !== 'default') navigate(-1)
-    navigate('/')
+    navigate(-1)
   }
 
   return(

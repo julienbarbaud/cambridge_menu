@@ -14,6 +14,8 @@ from trinity_scraper import scrape_trinity
 from jesus_scraper import scrape_jesus
 from robinson_scraper import scrape_robinson
 from selwyn_scraper import scrape_selwyn
+from peterhouse_scraper import scrape_peterhouse
+from newnham_scraper import scrape_newnham
 
 
 SCRAPERS = {
@@ -23,6 +25,8 @@ SCRAPERS = {
     "Jesus": scrape_jesus,
     "Robinson": scrape_robinson,
     "Selwyn": scrape_selwyn,
+    "Peterhouse": scrape_peterhouse,
+    "Newnham": scrape_newnham,
 }
 
 LOGGER = logging.getLogger(__name__)

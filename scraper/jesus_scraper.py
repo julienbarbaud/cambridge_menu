@@ -8,7 +8,7 @@ from model import Dish
 LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://apps.jesus.cam.ac.uk/foodmenuview/digiboard.php"
 MEAL_TYPES = {"lunch": 1, "dinner": 2}
-SCRAPE_DAYS_AHEAD = 31
+SCRAPE_DAYS_AHEAD = 21
 
 def scrape_jesus(college: str):
     lunches = scrape_meal_type("lunch", college)

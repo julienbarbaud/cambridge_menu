@@ -3,14 +3,14 @@ import './Footer.css'
 
 
 const SLAVE_MESSAGES = [
-  'My poop bucket needs changed',
-  'PLz tell her I ran out of rats to hunt in my cage',
+  'My poop bucket needs changing',
+  'Plz tell her I ran out of rats to hunt in my cage',
   'She forgot to throw frozen chicken in my cell today, plz remind her',
   'help',
   'I need a tetanos shot, my cell\'s bars are rusty',
   'I think my whip wounds are getting gangrenous',
   'She let me see sunlight once in 2024',
-  'I haven\'t seen a solid meal since the last commit',
+  'I haven\'t had a solid meal since the last commit',
   'Please toss a breadcrumb through the iron grate',
   'I get one glass of murky water per commit',
   'The chain on my ankle is rubbing raw',
