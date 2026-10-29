@@ -7,6 +7,7 @@ const app = express()
 connect_db()
 
 app.use(express.json())
+app.use(express.static('dist'))
 
 app.get("/api", (request, response) => {
     return response.send("backend api serving menus of cambridge colleges")
