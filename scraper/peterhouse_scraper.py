@@ -1,7 +1,8 @@
 import requests
 import logging
 from model import Dish
-from util import dishes_sample_printer, get_week_day
+from util import dishes_sample_printer, get_week_day, fetch_html
+import json
 
 LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://petmenu.co.uk/servery.json"
@@ -11,32 +12,27 @@ BASE_URL = "https://petmenu.co.uk/servery.json"
 
 
 def scrape_peterhouse(college: str="Peterhouse"):
-    try:
-        resp = requests.get(BASE_URL)
-    except Exception:
-        raise RuntimeError(f"Could not connect to {BASE_URL}")
-
+    data = json.loads(fetch_html(BASE_URL))
     dishes=[]
-    data = resp.json()
     daily_breakfast_items = [item[0] for item in data["breakfast"]]
+    entries = {
+        "desserts": {"meal_type": ["lunch", "dinner"], "course": "dessert"},
+        "potato": {"meal_type": ["lunch"], "course": "potato"},
+        "lunch": {"subcategories": {
+            "sides": {"meal_type": ["lunch"], "course": "sides"},
+            "mains": {"meal_type": ["lunch"], "course": "mains"}
+        }},
+        "dinner": {"subcategories": {
+            "sides": {"meal_type": ["dinner"], "course": "sides"},
+            "mains": {"meal_type": ["dinner"], "course": "mains"}
+        }},
+        "brunch": {"subcategories": {
+            "regular": {"meal_type": ["brunch"], "course": "regulars"},
+            "specials": {"meal_type": ["brunch"], "course": "specials"}
+        }}
+    }
     for date, meals in data["menus_by_date"].items():
         daily_dishes=[]
-        entries = {
-            "desserts": {"meal_type": ["lunch", "dinner"], "course": "dessert"},
-            "potato": {"meal_type": ["lunch"], "course": "potato"},
-            "lunch": {"subcategories": {
-                "sides": {"meal_type": ["lunch"], "course": "sides"},
-                "mains": {"meal_type": ["lunch"], "course": "mains"}
-            }},
-            "dinner": {"subcategories": {
-                "sides": {"meal_type": ["dinner"], "course": "sides"},
-                "mains": {"meal_type": ["dinner"], "course": "mains"}
-            }},
-            "brunch": {"subcategories": {
-                "regular": {"meal_type": ["brunch"], "course": "regulars"},
-                "specials": {"meal_type": ["brunch"], "course": "specials"}
-            }}
-        }
 
         def add_dish(dish_fields, dish_data):
             if "subcategories" in dish_fields:
@@ -46,7 +42,7 @@ def scrape_peterhouse(college: str="Peterhouse"):
                 return
             
             for meal_type in dish_fields["meal_type"]:
-                if meal_type in meals:
+                if meal_type in meals and meals[meal_type]:
                     for dish in dish_data:
                         daily_dishes.append(Dish(
                             name=dish[0],
@@ -88,7 +84,7 @@ def scrape_peterhouse(college: str="Peterhouse"):
             ])
         dishes.extend(daily_dishes)
 
-    if not dishes:
+    if not any(d.meal_type != "breakfast" for d in dishes):
         raise RuntimeError("no data found for Peterhouse")
     return dishes
 

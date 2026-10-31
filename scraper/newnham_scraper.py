@@ -1,6 +1,5 @@
 import bs4
 import logging
-from datetime import datetime
 from util import fetch_html, MEAL_MARKERS, dishes_sample_printer, normalize_string_data
 from model import Dish
 
@@ -8,23 +7,21 @@ LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://newn.cam.ac.uk/weekly-menus"
 
 def scrape_newnham(college: str="Newnham"):
-    day = datetime.now()
     dishes = []
     html = fetch_html(BASE_URL)
     soup = bs4.BeautifulSoup(html, "html.parser")
-    print("souped up")
     for container in soup.find_all("div", class_="menu-week-container"):
-        print("in container")
-        # if container is None:
-        #     continue
         meal_type_element = container.select_one("div.menu-week-header h1")
         if meal_type_element is None:
             continue
         meal_type = None
+        found_markers = 0
         for meal_marker in MEAL_MARKERS:
             if meal_marker in meal_type_element.get_text().lower():
                 meal_type = meal_marker
-        if meal_type is None:
+                found_markers += 1
+        if found_markers != 1 or meal_type is None:
+            LOGGER.warning(f"Can't figure out meal type from {meal_type_element.get_text()}")
             continue
 
         for day_menu in container.select("div.paragraph--type--day-menu"):
@@ -43,12 +40,19 @@ def parse_day_meal(meal_type: str, day_menu: bs4.Tag, college):
     dishes = []
     day_element = day_menu.find("time")
     if day_element is None:
-        LOGGER.warning("skipping day cause date not fond")
+        LOGGER.warning("skipping day cause date not found")
         return []
-    date = str(day_element.attrs["datetime"]).split("T")[0]
-    for dish_name in day_menu.select("div p"):
+    try:
+        date = str(day_element.attrs["datetime"]).split("T")[0]
+    except KeyError:
+        LOGGER.warning(f"missing date")
+        return []
+    for dish_name_p in day_menu.select("div p"):
+        dish_name = dish_name_p.get_text().strip()
+        if not dish_name:
+            continue
         dishes.append(Dish(
-            name=dish_name.get_text(),
+            name=dish_name,
             meal_type=normalize_string_data(meal_type),
             date=date,
             course=None,
