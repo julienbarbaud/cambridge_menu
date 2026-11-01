@@ -1,21 +1,13 @@
 import bs4
 import logging
-from util import date_isoformat, fetch_html, dishes_sample_printer, normalize_string_data, MEAL_MARKERS
+from util import date_isoformat, fetch_html, dishes_sample_printer, normalize_string_data, MEAL_MARKERS, WEEKDAY_MAP
 from model import Dish
 from dateutil import parser
 from datetime import datetime, timedelta
 
 LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://www.queens.cam.ac.uk/life-at-queens/catering/dining-hall/weekly-menu/"
-weekday_map = {
-    "monday": 0,
-    "tuesday": 1,
-    "wednesday": 2,
-    "thursday": 3,
-    "friday": 4,
-    "saturday": 5,
-    "sunday": 6,
-}
+
 
 def scrape_queens(college: str="Queen's"):
     html = fetch_html(BASE_URL)
@@ -43,7 +35,7 @@ def parse_day(day_content: bs4.Tag, college: str, start_date: datetime):
     for meal_header in meal_headers:
         try:
             weekday, meal_type = meal_header.get_text().strip().split()
-            date = start_date + timedelta(days=weekday_map[weekday.lower()])
+            date = start_date + timedelta(days=WEEKDAY_MAP[weekday.lower()])
         except (ValueError, KeyError):
             LOGGER.warning("meal header format not recognized, skipping meal")
             continue

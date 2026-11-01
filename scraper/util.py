@@ -10,6 +10,15 @@ if not DB_URL:
     raise RuntimeError("MONGODB_URI is not set (put it in .env locally, or in a GitHub secret)")
 
 WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+WEEKDAY_MAP = {
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6,
+}
 MEAL_MARKERS = {"lunch", "dinner", "brunch", "breakfast"}
 
 def fetch_html(url: str):
