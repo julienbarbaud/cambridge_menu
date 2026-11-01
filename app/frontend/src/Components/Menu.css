@@ -1,23 +1,58 @@
 #menu-list {
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .college-menu-card {
     background: #faf3f8;
     background-image: radial-gradient(ellipse at center,#0000, #7a2a1a11 100%);
-    margin:5px;
-    margin-bottom: 20px;
     font-family: var(--posh-font);
     color: var(--ink);
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     padding:8px;
+    box-shadow: 4px 4px 5px var(--shadow);
+    width: 100%;
+}
+
+.college-menu-card.selected {
+    flex-direction: column;
     padding-bottom:35px;
 }
 
+.college-menu-card.unselected {
+    padding-bottom: 15px;
+    padding-left: 13px;
+    border-radius: 5px;
+}
+
+
+
+
+.toggle-menu-button {
+    display: flex;
+    height: auto;
+    color: var(--ink);
+    margin: 0px;
+    padding: 0px;
+    width: auto;
+}
+
 h2 {
-    align-self: center;
     margin-bottom: 8px;
+}
+
+.college-menu-card.unselected h2 {
+    width: fit-content;
+    margin-left: 0px;
+}
+
+.college-menu-card.selected h2 {
+    width: 100%;
+    align-self: center;
 }
 
 h3 {
@@ -25,6 +60,7 @@ h3 {
     color: var(--ink-muted);
     font-size: var(--hint);
     margin-top: 30px;
+    width: fit-content;
 }
 
 .college-separator {
@@ -37,9 +73,12 @@ h3 {
     gap: 10px;
     display: flex;
     flex-direction: column;
+    align-items: left;
     font-size: var(--normal);
 }
 
 .course-item {
     text-indent: 12px;
+    width: fit-content;
+    text-align: left;
 }

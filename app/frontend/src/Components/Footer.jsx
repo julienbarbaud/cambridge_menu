@@ -27,7 +27,10 @@ export const Footer = () => {
         <p id="hello-slave" className="footer-text slave-text">Made with love by Lucy's slave</p>
         <p id="slave-sos" className="footer-text slave-text" suppressHydrationWarning>({RANDOM_MESSAGE})</p>
       </div>
-      <p id='github-footer' className='footer-text'>Cambr'eats is <a href="https://github.com/julienbarbaud/cambridge_menu">open source</a>.</p>
+      <div id="info-section">
+        <p id='github-footer' className='footer-text'>Cambr'eats is <a href="https://github.com/julienbarbaud/cambridge_menu">open source</a></p>
+        <p id='email-footer' className='footer-text'>julien.barbaud@outlook.fr</p>
+      </div>
     </footer>
   )
 }

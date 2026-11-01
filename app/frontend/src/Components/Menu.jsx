@@ -1,11 +1,16 @@
 import { get_cached_dishes } from '../service.js'
 import { useState, useEffect } from 'react'
 import { group_dishes_by } from '../util/helper.js'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './Menu.css'
 
 export const MenuList = ({ date, meal }) => {
   const [cached_dishes, set_cached_dishes] = useState([])
+  const location = useLocation()
   let dishes = date && cached_dishes[date]?.[meal] || []
+  const chosen_college_menu = decodeURI(location.hash).substring(1)
+  console.log(`chosen college: ${chosen_college_menu}`)
+
   // lumping brunch and breakfast together
   if (meal === 'brunch') {
     const breakfast = date && cached_dishes[date]?.['breakfast'] || []
@@ -22,9 +27,25 @@ export const MenuList = ({ date, meal }) => {
         for (const date_key of Object.keys(date_groups)){
           date_groups[date_key] = group_dishes_by('meal_type', date_groups[date_key])
         }
-        set_cached_dishes(date_groups)
+        // in case the date is not included in the date (no meals on that date),
+        // we set an empty date entry anyway to avoid an infinite loop (telling the effect not to re-fetchv)
+        set_cached_dishes({ date: [], ...date_groups })
       })
   }, [date, meal, cached_dishes])
+
+  useEffect(() => {
+    // 1. Only run this if we are done loading data (dishes is not empty)
+    if (dishes.length > 0 && chosen_college_menu) {
+      const element = document.getElementById(chosen_college_menu)
+
+      if (element) {
+        // Use setTimeout to ensure the browser has fully painted the DOM elements
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 5)
+      }
+    }
+  }, [dishes.length, chosen_college_menu])
 
   if (date === null) return
   console.log(`dishes: ${dishes}`)
@@ -33,22 +54,61 @@ export const MenuList = ({ date, meal }) => {
     <ul id='menu-list'>
       {Object.entries(college_menus).sort((a,b) => a[0].localeCompare(b[0])).map(
         ([college, dishes]) => {
-          return(<CollegeMenu key={college} college_name={college} dishes={dishes}/>)
+          return(<CollegeMenu
+            key={college}
+            college_name={college}
+            dishes={dishes}
+            chosen_college_menu={chosen_college_menu}
+            location={location}
+          />)
         }
       )}
     </ul>
   )
 }
 
-const CollegeMenu = ({ college_name, dishes }) => {
+const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) => {
+  const navigate = useNavigate()
   const courses = group_dishes_by('course', dishes)
-  return(
-    <div className='college-menu-card'>
-      <h2>{college_name}</h2>
-      <hr className='college-separator'/>
-      {Object.entries(courses).map(([name, courses]) => <CourseList key={name} course_name={name==='null' ? 'Miscellaneous courses' : name} courses={courses}/>)}
-    </div>
-  )
+  const menu_id = `${college_name}-menu`
+  const selected = chosen_college_menu === menu_id
+
+  const handle_college_menu_click = (event) => {
+    console.log(event.currentTarget)
+    const newHash = selected ? '' : `#${encodeURIComponent(event.currentTarget.getAttribute('college_menu_id'))}`
+    navigate(`${location.pathname}${location.search}${newHash}`, { replace: true })
+  }
+
+  if (selected){
+    return(
+      <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
+        <div id={menu_id} className={`college-menu-card ${selected? 'selected' : 'unselected'}`}>
+          <h2>{college_name}</h2>
+          {selected ?
+            <>
+              <hr className='college-separator'/>
+              {Object.entries(courses).map(
+                ([name, courses]) => <CourseList
+                  key={name}
+                  course_name={name==='null' ? 'Miscellaneous courses' : name}
+                  courses={courses}
+                />
+              )}
+            </>
+            : null
+          }
+        </div>
+      </button>
+    )
+  } else {
+    return(
+      <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
+        <div id={menu_id} className='college-menu-card unselected'>
+          <h2>{college_name}</h2>
+        </div>
+      </button>
+    )
+  }
 }
 
 const CourseList = ({ course_name, courses }) => {
