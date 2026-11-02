@@ -20,6 +20,8 @@ from churchill_scraper import scrape_churchill
 from queens_scraper import scrape_queens
 from darwin_scraper import scrape_darwin
 from fitzwilliam_scraper import scrape_fitzwilliam
+from pembroke_scraper import scrape_pembroke
+from corpus_christi_scraper import scrape_corpus_christi
 
 
 SCRAPERS = {
@@ -35,6 +37,8 @@ SCRAPERS = {
     "Queen's": scrape_queens,
     "Darwin": scrape_darwin,
     "Fitzwilliam": scrape_fitzwilliam,
+    "Pembroke": scrape_pembroke,
+    "Corpus Christi": scrape_corpus_christi
 }
 
 LOGGER = logging.getLogger(__name__)

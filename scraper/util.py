@@ -1,8 +1,10 @@
 import requests as req
+from requests.adapters import HTTPAdapter
 import os
 import dotenv
 from datetime import datetime
 from dateutil import parser
+from urllib.parse import urlparse
 
 dotenv.load_dotenv()
 DB_URL = os.getenv("MONGODB_URI")
@@ -21,8 +23,19 @@ WEEKDAY_MAP = {
 }
 MEAL_MARKERS = {"lunch", "dinner", "brunch", "breakfast"}
 
+_sessions = {}
+
+def get_session(domain: str) -> req.Session:
+    if domain not in _sessions:
+        session = req.Session()
+        session.mount("https://", HTTPAdapter(max_retries=3))
+        _sessions[domain] = session
+    return _sessions[domain]
+
+
 def fetch_html(url: str):
-    resp = req.get(url, headers={"User-Agent": "colleges-menu-scraper"}, timeout=10)
+    session = get_session(urlparse(url).netloc)
+    resp = session.get(url, headers={"User-Agent": "colleges-menu-scraper"}, timeout=10)
     resp.raise_for_status()
     return resp.content
 
