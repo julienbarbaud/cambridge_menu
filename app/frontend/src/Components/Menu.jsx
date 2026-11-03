@@ -3,20 +3,19 @@ import { useState, useEffect } from 'react'
 import { group_dishes_by } from '../util/helper.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import './Menu.css'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export const MenuList = ({ date, meal }) => {
   const [cached_dishes, set_cached_dishes] = useState([])
   const location = useLocation()
   let dishes = date && cached_dishes[date]?.[meal] || []
   const chosen_college_menu = decodeURI(location.hash).substring(1)
-  console.log(`chosen college: ${chosen_college_menu}`)
 
   // lumping brunch and breakfast together
   if (meal === 'brunch') {
     const breakfast = date && cached_dishes[date]?.['breakfast'] || []
     dishes = dishes.concat(breakfast)
   }
-  console.log(dishes)
 
   useEffect(() => {
     if (!date || !meal) return
@@ -33,22 +32,8 @@ export const MenuList = ({ date, meal }) => {
       })
   }, [date, meal, cached_dishes])
 
-  useEffect(() => {
-    // 1. Only run this if we are done loading data (dishes is not empty)
-    if (dishes.length > 0 && chosen_college_menu) {
-      const element = document.getElementById(chosen_college_menu)
-
-      if (element) {
-        // Use setTimeout to ensure the browser has fully painted the DOM elements
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 5)
-      }
-    }
-  }, [dishes.length, chosen_college_menu])
 
   if (date === null) return
-  console.log(`dishes: ${dishes}`)
   const college_menus = group_dishes_by('college', dishes)
   return(
     <ul id='menu-list'>
@@ -74,18 +59,30 @@ const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) =>
   const selected = chosen_college_menu === menu_id
 
   const handle_college_menu_click = (event) => {
-    console.log(event.currentTarget)
     const newHash = selected ? '' : `#${encodeURIComponent(event.currentTarget.getAttribute('college_menu_id'))}`
     navigate(`${location.pathname}${location.search}${newHash}`, { replace: true })
   }
 
-  if (selected){
-    return(
-      <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
-        <div id={menu_id} className={`college-menu-card ${selected? 'selected' : 'unselected'}`}>
-          <h2>{college_name}</h2>
-          {selected ?
-            <>
+  const handle_animation_end = () => {
+    const cur_element = document.getElementById(menu_id)
+    cur_element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  return(
+    <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
+      <div id={menu_id} className={`college-menu-card ${selected? 'selected' : 'unselected'}`}>
+        <h2>{college_name}</h2>
+        <AnimatePresence>
+          {selected && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: 'hidden' }}
+              onAnimationComplete={handle_animation_end}
+              className='motion-container'
+            >
               <hr className='college-separator'/>
               {Object.entries(courses).map(
                 ([name, courses]) => <CourseList
@@ -94,21 +91,12 @@ const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) =>
                   courses={courses}
                 />
               )}
-            </>
-            : null
-          }
-        </div>
-      </button>
-    )
-  } else {
-    return(
-      <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
-        <div id={menu_id} className='college-menu-card unselected'>
-          <h2>{college_name}</h2>
-        </div>
-      </button>
-    )
-  }
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </button>
+  )
 }
 
 const CourseList = ({ course_name, courses }) => {
