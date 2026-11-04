@@ -1,7 +1,6 @@
 import { DateList } from './Selectors'
 import { MealList } from './Selectors'
 import { MenuList } from './Menu'
-import { useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { today, get_date_string } from '../util/dates'
 import './MenuPage.css'
@@ -10,7 +9,7 @@ export const MenuPage = () => {
   const default_date = today()
   const navigate = useNavigate()
   // choosing to rely on search params rather than state so the query state can be saved in histroy, shared, etc...
-  const [search_params, set_search_params] = useSearchParams(`?meal_type=lunch&date=${default_date}`)
+  const [search_params] = useSearchParams(`?meal_type=lunch&date=${default_date}`)
   const create_setter = (field_name) => (val) => {
     const new_params = new URLSearchParams(search_params)
     new_params.set(field_name, val)

@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ssr": "rm -rf dist && rm -rf ../backend/dist && npm run build && mv dist ../backend",
+    "deploy": "cd ../.. git add . && git commit -m auto-ui-deploy && git push",
+    "build-deploy": "npm run build:ssr && npm run deploy",
     "lint": "eslint .",
     "preview": "vite preview"
   },
