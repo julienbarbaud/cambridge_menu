@@ -3,6 +3,7 @@ import { Link, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { MenuPage } from './Components/MenuPage'
 import { SearchPage } from './Components/SearchPage'
 import { Footer } from './Components/Footer'
+import chocolate_icon from '../assets/chocolate-icon-clean.png'
 
 
 
@@ -21,7 +22,7 @@ const App = () => {
         <div className='top-section'>
           <div className='header-block'>
             <div className='icon-header-section'>
-              <img id="icon" src="/assets/chocolate-icon.png"></img>
+              <img id="icon" src={chocolate_icon}></img>
               <h1 id='site-header'>Cambr'eats</h1>
             </div>
             <h4 id='site-subheader'>All the colleges' menus, in one place (beta)</h4>
