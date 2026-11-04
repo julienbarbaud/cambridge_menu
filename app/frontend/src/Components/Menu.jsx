@@ -57,16 +57,53 @@ const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) =>
   const courses = group_dishes_by('course', dishes)
   const menu_id = `${college_name}-menu`
   const selected = chosen_college_menu === menu_id
+  const GLIDE_SECONDS = 0.8
+  const MU = 1/200  // spring constant for hand-made scrolling animation
 
   const handle_college_menu_click = (event) => {
     const newHash = selected ? '' : `#${encodeURIComponent(event.currentTarget.getAttribute('college_menu_id'))}`
     navigate(`${location.pathname}${location.search}${newHash}`, { replace: true })
   }
 
-  const handle_animation_end = () => {
-    const cur_element = document.getElementById(menu_id)
-    cur_element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+
+  useEffect(() => {
+    if (!selected) return
+    const el = document.getElementById(menu_id)
+    if (!el) return
+
+    let frame
+    let last_t = performance.now()
+    const start_t = last_t
+    let last_x = el.getBoundingClientRect().top
+    const start_x = last_x
+    const dampened_spring_motion = t => (1 + MU * t) * start_x * Math.exp(-MU*t)
+    const step = (now) => {
+      const t = now - start_t
+      const dt = now - last_t
+      const x = el.getBoundingClientRect().top
+      const target = dampened_spring_motion(t+dt)
+      const dx = target - x
+      // fraction of the remaining distance, independent of the screen's refresh rate
+      window.scrollBy({ top: -dx, behavior: 'instant' })
+
+      frame = requestAnimationFrame(step)
+    }
+    frame = requestAnimationFrame(step)
+
+    const stop = () => cancelAnimationFrame(frame)
+    const stop_timer = setTimeout(stop, GLIDE_SECONDS * 1000)
+    // let the user take over if they scroll themselves
+    window.addEventListener('wheel', stop, { passive: true })
+    window.addEventListener('touchstart', stop, { passive: true })
+    window.addEventListener('keydown', stop)
+    return () => {
+      stop()
+      clearTimeout(stop_timer)
+      window.removeEventListener('wheel', stop)
+      window.removeEventListener('touchstart', stop)
+      window.removeEventListener('keydown', stop)
+    }
+  }, [selected, menu_id])
 
   return(
     <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
@@ -80,7 +117,6 @@ const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) =>
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
               style={{ overflow: 'hidden' }}
-              onAnimationComplete={handle_animation_end}
               className='motion-container'
             >
               <hr className='college-separator'/>

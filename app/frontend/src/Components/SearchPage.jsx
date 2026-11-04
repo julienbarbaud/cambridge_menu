@@ -13,7 +13,7 @@ export const SearchPage = ({ initial_search }) => {
     if (search.length<2) return
     // the ignore flag is here to avoid stale request results
     let ignore = false
-    get_search_matches(search)
+    get_search_matches(search.toLowerCase().trim())
       .then(res => {
         if (!ignore) {
           set_results(res)
