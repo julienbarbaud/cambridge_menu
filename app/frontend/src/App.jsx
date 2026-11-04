@@ -20,7 +20,10 @@ const App = () => {
       <div className="page">
         <div className='top-section'>
           <div className='header-block'>
-            <h1 id='site-header'>Cambr'eats</h1>
+            <div className='icon-header-section'>
+              <img id="icon" src="/assets/chocolate-icon.png"></img>
+              <h1 id='site-header'>Cambr'eats</h1>
+            </div>
             <h4 id='site-subheader'>All the colleges' menus, in one place (beta)</h4>
           </div>
           <div id="search-section">

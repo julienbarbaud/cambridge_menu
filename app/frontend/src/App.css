@@ -14,11 +14,28 @@
   margin-bottom:20px;
 }
 
+
+.icon-header-section{
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  margin-top:10px;
+}
+
+#icon {
+  height: calc(var(--page-header) + 2vw);
+  margin: 5px;
+  margin-right: 10px;
+  padding: 0px;
+}
+
 #site-header {
   font-size: var(--page-header);
   color: var(--bg-contrast-highlight);
+  margin-top:auto;
   margin-bottom: 0px;
-  margin-top:30px;
+  padding: 0px;
 }
 
 #site-subheader {
@@ -32,7 +49,7 @@
 
 #search-section {
   margin-left: auto;
-  margin-top: 40px;
+  margin-top: 30px;
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -63,3 +80,4 @@
     mask: url("../assets/back-button-icon.png") center / contain no-repeat;
     background-color: var(--bg-contrast);
 }
+

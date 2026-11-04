@@ -13,7 +13,7 @@ export const SearchPage = ({ initial_search }) => {
     if (search.length<2) return
     // the ignore flag is here to avoid stale request results
     let ignore = false
-    get_search_matches(search)
+    get_search_matches(search.toLowerCase().trim())
       .then(res => {
         if (!ignore) {
           set_results(res)
@@ -54,12 +54,11 @@ const SearchResults = ({ results }) => {
 }
 
 const CollegeResults = ({ college, results }) => {
-
   return(<div>
     <h2>{college}</h2>
     <ul className='college-results-list'>
       {results.map(dish => <li key={dish._id}>
-        <Link className="meal-link" to={`/?date=${dish.date}&meal_type=${dish.meal_type}`}>
+        <Link className="meal-link" to={encodeURI(`/?date=${dish.date}&meal_type=${dish.meal_type}#${dish.college}-menu`)}>
           <b>{get_short_slash_date(dish.date)}</b> ({dish.meal_type}): {dish.name}
         </Link>
       </li>)}

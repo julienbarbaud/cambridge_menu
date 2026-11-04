@@ -1,17 +1,21 @@
 import { get_cached_dishes } from '../service.js'
 import { useState, useEffect } from 'react'
 import { group_dishes_by } from '../util/helper.js'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './Menu.css'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export const MenuList = ({ date, meal }) => {
   const [cached_dishes, set_cached_dishes] = useState([])
+  const location = useLocation()
   let dishes = date && cached_dishes[date]?.[meal] || []
+  const chosen_college_menu = decodeURI(location.hash).substring(1)
+
   // lumping brunch and breakfast together
   if (meal === 'brunch') {
     const breakfast = date && cached_dishes[date]?.['breakfast'] || []
     dishes = dishes.concat(breakfast)
   }
-  console.log(dishes)
 
   useEffect(() => {
     if (!date || !meal) return
@@ -22,32 +26,112 @@ export const MenuList = ({ date, meal }) => {
         for (const date_key of Object.keys(date_groups)){
           date_groups[date_key] = group_dishes_by('meal_type', date_groups[date_key])
         }
-        set_cached_dishes(date_groups)
+        // in case the date is not included in the date (no meals on that date),
+        // we set an empty date entry anyway to avoid an infinite loop (telling the effect not to re-fetchv)
+        set_cached_dishes({ date: [], ...date_groups })
       })
   }, [date, meal, cached_dishes])
 
+
   if (date === null) return
-  console.log(`dishes: ${dishes}`)
   const college_menus = group_dishes_by('college', dishes)
   return(
     <ul id='menu-list'>
       {Object.entries(college_menus).sort((a,b) => a[0].localeCompare(b[0])).map(
         ([college, dishes]) => {
-          return(<CollegeMenu key={college} college_name={college} dishes={dishes}/>)
+          return(<CollegeMenu
+            key={college}
+            college_name={college}
+            dishes={dishes}
+            chosen_college_menu={chosen_college_menu}
+            location={location}
+          />)
         }
       )}
     </ul>
   )
 }
 
-const CollegeMenu = ({ college_name, dishes }) => {
+const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) => {
+  const navigate = useNavigate()
   const courses = group_dishes_by('course', dishes)
+  const menu_id = `${college_name}-menu`
+  const selected = chosen_college_menu === menu_id
+  const GLIDE_SECONDS = 0.8
+  const MU = 1/200  // spring constant for hand-made scrolling animation
+
+  const handle_college_menu_click = (event) => {
+    const newHash = selected ? '' : `#${encodeURIComponent(event.currentTarget.getAttribute('college_menu_id'))}`
+    navigate(`${location.pathname}${location.search}${newHash}`, { replace: true })
+  }
+
+
+  useEffect(() => {
+    if (!selected) return
+    const el = document.getElementById(menu_id)
+    if (!el) return
+
+    let frame
+    let last_t = performance.now()
+    const start_t = last_t
+    let last_x = el.getBoundingClientRect().top
+    const start_x = last_x
+    const dampened_spring_motion = t => (1 + MU * t) * start_x * Math.exp(-MU*t)
+    const step = (now) => {
+      const t = now - start_t
+      const dt = now - last_t
+      const x = el.getBoundingClientRect().top
+      const target = dampened_spring_motion(t+dt)
+      const dx = target - x
+      // fraction of the remaining distance, independent of the screen's refresh rate
+      window.scrollBy({ top: -dx, behavior: 'instant' })
+
+      frame = requestAnimationFrame(step)
+    }
+    frame = requestAnimationFrame(step)
+
+    const stop = () => cancelAnimationFrame(frame)
+    const stop_timer = setTimeout(stop, GLIDE_SECONDS * 1000)
+    // let the user take over if they scroll themselves
+    window.addEventListener('wheel', stop, { passive: true })
+    window.addEventListener('touchstart', stop, { passive: true })
+    window.addEventListener('keydown', stop)
+    return () => {
+      stop()
+      clearTimeout(stop_timer)
+      window.removeEventListener('wheel', stop)
+      window.removeEventListener('touchstart', stop)
+      window.removeEventListener('keydown', stop)
+    }
+  }, [selected, menu_id])
+
   return(
-    <div className='college-menu-card'>
-      <h2>{college_name}</h2>
-      <hr className='college-separator'/>
-      {Object.entries(courses).map(([name, courses]) => <CourseList key={name} course_name={name==='null' ? 'Miscellaneous courses' : name} courses={courses}/>)}
-    </div>
+    <button className="toggle-menu-button" onClick={handle_college_menu_click} college_menu_id={menu_id}>
+      <div id={menu_id} className={`college-menu-card ${selected? 'selected' : 'unselected'}`}>
+        <h2>{college_name}</h2>
+        <AnimatePresence>
+          {selected && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: 'hidden' }}
+              className='motion-container'
+            >
+              <hr className='college-separator'/>
+              {Object.entries(courses).map(
+                ([name, courses]) => <CourseList
+                  key={name}
+                  course_name={name==='null' ? 'Miscellaneous courses' : name}
+                  courses={courses}
+                />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </button>
   )
 }
 

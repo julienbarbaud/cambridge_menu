@@ -13,7 +13,7 @@ footer {
 #slave-rant {
     display: flex;
     flex-direction: column;
-    max-width: 60vw;
+    min-width: 60vw;
 }
 
 .footer-text {
@@ -34,7 +34,9 @@ footer {
     font-size: var(--secret);;
 }
 
-
-#github-footer {
+#info-section {
     margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
 }
