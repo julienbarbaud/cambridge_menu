@@ -22,7 +22,9 @@ from darwin_scraper import scrape_darwin
 from fitzwilliam_scraper import scrape_fitzwilliam
 from pembroke_scraper import scrape_pembroke
 from corpus_christi_scraper import scrape_corpus_christi
-
+from st_edmunds_scraper import scrape_st_edmunds
+from magdalene_scraper import scrape_magdalene
+from st_catharines_scraper import scrape_st_catharines
 
 SCRAPERS = {
     "St John": scrape_stjohn, 
@@ -38,7 +40,10 @@ SCRAPERS = {
     "Darwin": scrape_darwin,
     "Fitzwilliam": scrape_fitzwilliam,
     "Pembroke": scrape_pembroke,
-    "Corpus Christi": scrape_corpus_christi
+    "Corpus Christi": scrape_corpus_christi,
+    "St Edmund's": scrape_st_edmunds,
+    "Magdalene": scrape_magdalene,
+    "St Catharine's": scrape_st_catharines,
 }
 
 LOGGER = logging.getLogger(__name__)
