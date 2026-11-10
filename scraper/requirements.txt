@@ -5,11 +5,14 @@ charset-normalizer==3.5.2
 cryptography==50.0.2
 dnspython==2.9.0
 dotenv==0.9.9
+greenlet==3.0.1
 idna==3.20
 pdfminer.six==20260107
 pdfplumber==0.11.10
 pillow==13.0.0
+playwright==1.40.0
 pycparser==3.12
+pyee==11.0.1
 pymongo==4.19.0
 pypdfium2==5.14.0
 python-dateutil==3.0.0

@@ -26,6 +26,9 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f scraper/requirements.txt ]; then pip install -r scraper/requirements.txt; fi
 
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
       - name: Run main.py
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}

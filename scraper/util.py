@@ -5,6 +5,7 @@ import dotenv
 from datetime import datetime
 from dateutil import parser
 from urllib.parse import urlparse
+from playwright.sync_api import sync_playwright
 
 dotenv.load_dotenv()
 DB_URL = os.getenv("MONGODB_URI")
@@ -63,3 +64,13 @@ def dishes_sample_printer(dishes):
             print(dishes[-10+i])
     except IndexError:
         print("there is less than 10 items, probably abnormal")
+
+def playwright_html_load(url):
+    # this is needed because the menu page is rendered dynamically with js
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(url, wait_until="networkidle")
+        html_content = page.content()
+        browser.close()
+        return html_content

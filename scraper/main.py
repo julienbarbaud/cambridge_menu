@@ -25,6 +25,7 @@ from corpus_christi_scraper import scrape_corpus_christi
 from st_edmunds_scraper import scrape_st_edmunds
 from magdalene_scraper import scrape_magdalene
 from st_catharines_scraper import scrape_st_catharines
+from clare_hall_scraper import scrape_clare_hall
 
 SCRAPERS = {
     "St John": scrape_stjohn, 
@@ -44,6 +45,7 @@ SCRAPERS = {
     "St Edmund's": scrape_st_edmunds,
     "Magdalene": scrape_magdalene,
     "St Catharine's": scrape_st_catharines,
+    "Clare Hall": scrape_clare_hall
 }
 
 LOGGER = logging.getLogger(__name__)
