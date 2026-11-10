@@ -9,7 +9,9 @@ on:
 
 jobs:
   run-python:
-    runs-on: ubuntu-latest
+    # downgrading to avoid compatibility issues with Playwright and Chromium
+    # (my laptop is really old and can not handle a newer version of playwirght)
+    runs-on: ubuntu-22.04 
 
     steps:
       - name: Checkout repository
