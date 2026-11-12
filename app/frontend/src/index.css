@@ -24,6 +24,11 @@
   --date: clamp(16px, 3vw, 25px)
 }
 
+html {
+  scroll-behavior: auto !important;
+  overflow-anchor: none;
+}
+
 body {
   background: var(--bg);
 }
