@@ -73,8 +73,8 @@ const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) =>
     if (!el) return
 
     const start_x = el.getBoundingClientRect().top
+    // choosing a critically dampened spring motion to avoid oscillations but keep a physically plausible feel
     const dampened_spring_motion = t => (1 + MU * t) * start_x * Math.exp(-MU * t)
-    const glide_ms = GLIDE_SECONDS * 1000
 
     const scroll_by = (delta) => {
       const max_y = Math.max(0, root.scrollHeight - window.innerHeight)
@@ -82,27 +82,21 @@ const CollegeMenu = ({ college_name, dishes, chosen_college_menu, location }) =>
       if (Math.abs(y - window.scrollY) >= 0.5) window.scrollTo({ top: y, behavior: 'instant' })
     }
 
-    const rows = ['t,dt,x_before,moved_since_last_write,scrollY,error']   // debug, see below
-    let frame, start_time = null, last_now = null, last_after = start_x
+    let frame, start_time = null
 
     const step = (now) => {
       start_time ??= now
       const t = now - start_time
-      const dt = last_now === null ? 0 : now - last_now
-      last_now = now
 
       const x = el.getBoundingClientRect().top
       const error = x - dampened_spring_motion(t)
-      rows.push([t, dt, x, x - last_after, window.scrollY, error].map(v => v.toFixed(1)).join(','))
 
-      if (t < glide_ms) {
-        scroll_by(error)        // only scroll toward the top, never back
+      if (t < GLIDE_SECONDS * 1000) {
+        scroll_by(error)
         frame = requestAnimationFrame(step)
       } else {
-        scroll_by(x)                            // land exactly on the top
-        console.log(rows.join('\n'))
+        scroll_by(x)
       }
-      last_after = el.getBoundingClientRect().top
     }
     frame = requestAnimationFrame(step)
 
